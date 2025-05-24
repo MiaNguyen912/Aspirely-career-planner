@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Edge animations */
+@keyframes flowAnimation {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Root to Career edge styles */
+.root-career-edge {
+  stroke-dasharray: 5;
+  animation: flowAnimation 30s linear infinite;
+}
+
+/* Career to Skill edge styles */
+.career-skill-edge {
+  stroke-dasharray: 10;
+  animation: flowAnimation 20s linear infinite;
+}
+
+/* Edge interaction */
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px currentColor);
+} 

@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
+import { ReactFlow, Controls, Background, useNodesState, useEdgesState, addEdge, Connection } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RootNode, CareerNode, SkillNode } from "./nodes";
 import { initialNodes, initialEdges, FileInfo, MajorInfo } from "@/data/nodeData";
+import { defaultEdgeOptions } from "@/styles/flowStyles";
 
-type MainContentProps = {
+interface MainContentProps {
   isExpanded: boolean;
-};
+}
 
 const nodeTypes = {
   rootNode: RootNode,
@@ -62,7 +63,10 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge({ ...connection, ...defaultEdgeOptions }, eds)),
+    [setEdges]
+  );
 
   // Update root node data when fileInfo or majorInfo changes
   useEffect(() => {
@@ -84,10 +88,26 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
 
   return (
     <main className={`pt-16 min-h-screen transition-all duration-300 ease-in-out ${isExpanded ? "ml-[20%]" : "ml-16"}`}>
-      <div style={{ width: "100vw", height: "calc(100vh - 16px)" }}>
-        <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} nodeTypes={nodeTypes} fitView>
-          <Controls style={{ marginBottom: "70px" }} />
-          <Background bgColor="white" color="#A9A9A9" gap={12} size={1} />
+      <div style={{ width: "100%", height: "calc(100vh - 64px)" }}>
+        <ReactFlow 
+          nodes={nodes} 
+          edges={edges} 
+          onNodesChange={onNodesChange} 
+          onEdgesChange={onEdgesChange} 
+          onConnect={onConnect} 
+          nodeTypes={nodeTypes}
+          defaultEdgeOptions={defaultEdgeOptions}
+          fitView
+          fitViewOptions={{ padding: 0.2 }}
+          minZoom={0.5}
+          maxZoom={2}
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          elementsSelectable={true}
+          selectNodesOnDrag={false}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Controls style={{ marginBottom: "10px" }} />
+          <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
         </ReactFlow>
       </div>
     </main>

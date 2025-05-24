@@ -50,7 +50,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "career-1",
     type: "careerNode",
-    position: { x: 0, y: 150 },
+    position: { x: 450, y: 150 },
     data: {
       name: "Software Engineer",
       averageSalary: 120000,
@@ -62,7 +62,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "career-2",
     type: "careerNode",
-    position: { x: 200, y: 150 },
+    position: { x: 450, y: -150 },
     data: {
       name: "Data Scientist",
       averageSalary: 130000,
@@ -74,7 +74,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-1",
     type: "skillNode",
-    position: { x: 0, y: 300 },
+    position: { x: 850, y: 150 },
     data: {
       name: "Python Programming",
       resources: ["https://www.python.org/doc/", "https://www.w3schools.com/python/"],
@@ -84,7 +84,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-2",
     type: "skillNode",
-    position: { x: 200, y: 300 },
+    position: { x: 850, y: -150 },
     data: {
       name: "Machine Learning",
       resources: ["https://www.coursera.org/learn/machine-learning", "https://www.kaggle.com/learn/intro-to-machine-learning"],
@@ -93,10 +93,38 @@ export const initialNodes: CustomNode[] = [
   },
 ];
 
-// Initial edges data
+// Initial edges data with styles
 export const initialEdges = [
-  { id: "root-career-1", source: "root", target: "career-1" },
-  { id: "root-career-2", source: "root", target: "career-2" },
-  { id: "career-1-skill-1", source: "career-1", target: "skill-1" },
-  { id: "career-2-skill-2", source: "career-2", target: "skill-2" },
+  { 
+    id: "root-career-1", 
+    source: "root",
+    sourceHandle: "root-source",
+    target: "career-1",
+    targetHandle: "career-target",
+    type: 'default',
+  },
+  { 
+    id: "root-career-2", 
+    source: "root",
+    sourceHandle: "root-source",
+    target: "career-2",
+    targetHandle: "career-target",
+    type: 'default',
+  },
+  { 
+    id: "career-1-skill-1", 
+    source: "career-1",
+    sourceHandle: "career-source",
+    target: "skill-1",
+    targetHandle: "skill-target",
+    type: 'default',
+  },
+  { 
+    id: "career-2-skill-2", 
+    source: "career-2",
+    sourceHandle: "career-source",
+    target: "skill-2",
+    targetHandle: "skill-target",
+    type: 'default',
+  },
 ];
