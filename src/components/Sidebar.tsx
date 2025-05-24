@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File, FileUp } from "lucide-react";
+import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File, FileUp, BookOpenText } from "lucide-react";
 import FileUploadArea from "./FileUploadArea";
 
 type SidebarProps = {
@@ -132,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
 
               <div className="bg-white/5 rounded-lg p-3 border border-white/10">
                 <div className="flex items-center gap-3 mb-2">
-                  <FileText size={20} className="text-blue-400" />
+                  <BookOpenText size={20} className="text-blue-400" />
                   <span className="text-white font-medium">Major</span>
                 </div>
                 <select
