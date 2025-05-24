@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File } from "lucide-react";
+import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File, FileUp } from "lucide-react";
 import FileUploadArea from "./FileUploadArea";
 
 type SidebarProps = {
@@ -198,6 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
           <NavItem icon={<User size={20} />} label="Profile" isExpanded={isExpanded} />
           <NavItem icon={<HelpCircle size={20} />} label="Help" isExpanded={isExpanded} />
           <NavItem icon={<Mail size={20} />} label="Contact" isExpanded={isExpanded} />
+          <NavItem icon={<FileUp size={20} />} label="Upload Resume" isExpanded={isExpanded} />
         </div>
       </div>
 
