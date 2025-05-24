@@ -4,6 +4,20 @@ import { RootNodeData } from "@/data/nodeData";
 
 export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [majorInfo, setMajorInfo] = useState<{ name: string; code: string } | null>(null);
+
+  useEffect(() => {
+    // Load major info from localStorage
+    const storedMajor = localStorage.getItem("selectedMajor");
+    if (storedMajor) {
+      try {
+        const parsedMajor = JSON.parse(storedMajor);
+        setMajorInfo(parsedMajor);
+      } catch (error) {
+        console.error("Error parsing stored major:", error);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (data.fileInfo) {
@@ -21,6 +35,23 @@ export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
       }
     }
   }, [data.fileInfo]);
+
+  // Listen for changes to selectedMajor in localStorage
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "selectedMajor" && e.newValue) {
+        try {
+          const parsedMajor = JSON.parse(e.newValue);
+          setMajorInfo(parsedMajor);
+        } catch (error) {
+          console.error("Error parsing stored major:", error);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   return (
     <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-md p-4 rounded-lg border border-blue-400/30 min-w-[300px] shadow-lg shadow-blue-500/10">
@@ -43,10 +74,10 @@ export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
       ) : (
         <p className="text-white/60 text-sm mb-3">No resume uploaded</p>
       )}
-      {data.majorInfo && (
+      {majorInfo && (
         <div className="mt-3 pt-3 border-t border-blue-400/30">
-          <p className="text-white/80 font-medium">{data.majorInfo.name}</p>
-          <p className="text-white/60 text-xs">{data.majorInfo.code}</p>
+          <p className="text-white/80 font-medium">{majorInfo.name}</p>
+          <p className="text-white/60 text-xs">{majorInfo.code}</p>
         </div>
       )}
     </div>
