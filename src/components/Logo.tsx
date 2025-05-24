@@ -1,15 +1,20 @@
-import { Layers } from "lucide-react";
+import Image from "next/image";
 
 type LogoProps = {
   size?: number;
   className?: string;
 };
 
-const Logo = ({ size = 24, className = "" }: LogoProps) => {
+const Logo = ({ size = 90, className = "" }: LogoProps) => {
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <Layers size={size} className="text-blue-400" />
-      <span className="font-bold text-white text-xl">Aspirely</span>
+    <div className={className} style={{ width: size, height: size, position: 'relative' }}>
+      <Image
+        src="/star_logo.png"
+        alt="Aspirely Logo"
+        fill
+        style={{ objectFit: 'contain' }}
+        priority
+      />
     </div>
   );
 };

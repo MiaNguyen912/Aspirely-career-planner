@@ -103,9 +103,9 @@ export default function Home() {
       <div className="fixed inset-0 bg-blue-500/5 pointer-events-none" />
       <div className="fixed inset-0 bg-[url('https://images.pexels.com/photos/3075993/pexels-photo-3075993.jpeg')] bg-cover bg-center opacity-5 mix-blend-overlay" />
 
-      <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/10 w-full max-w-md relative">
-        <div className="mb-8 flex justify-center">
-          <Logo size={48} className="scale-125" />
+      <div className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-xl border border-white/10 w-full max-w-md relative">
+        <div className="mb-4 flex justify-center">
+          <Logo size={180} className="scale-125" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
