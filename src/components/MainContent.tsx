@@ -137,14 +137,6 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         >
           <Controls style={{ marginBottom: "10px" }} />
           <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
-          <Panel position="top-right">
-            <button
-              onClick={onLayout}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              Layout
-            </button>
-          </Panel>
         </ReactFlow>
       </div>
     </main>
