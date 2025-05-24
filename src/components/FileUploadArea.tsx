@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useCallback, useState } from "react";
 import { Upload, X } from "lucide-react";
 
 interface FileUploadAreaProps {
@@ -8,53 +10,96 @@ interface FileUploadAreaProps {
 
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files[0];
-    if (file && (file.type === "application/pdf" || file.type === "application/msword" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
-      onFileUpload(file);
-    }
-  };
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      setError(null);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      onFileUpload(file);
-    }
-  };
+      const file = e.dataTransfer.files[0];
+      if (!file) {
+        setError("Please select a file");
+        return;
+      }
+
+      if (file.type !== "application/pdf") {
+        setError("Please upload a PDF file");
+        return;
+      }
+
+      // Convert file to base64 and store in localStorage
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const base64String = event.target.result.toString().split(",")[1];
+          localStorage.setItem("uploadedResumeFile", base64String);
+          onFileUpload(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    },
+    [onFileUpload]
+  );
+
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setError(null);
+      const file = e.target.files?.[0];
+      if (!file) {
+        setError("Please select a file");
+        return;
+      }
+
+      if (file.type !== "application/pdf") {
+        setError("Please upload a PDF file");
+        return;
+      }
+
+      // Convert file to base64 and store in localStorage
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const base64String = event.target.result.toString().split(",")[1];
+          localStorage.setItem("uploadedResumeFile", base64String);
+          onFileUpload(file);
+        }
+      };
+      reader.readAsDataURL(file);
+    },
+    [onFileUpload]
+  );
 
   return (
-    <div className="mt-3">
-      <div className="flex justify-end mb-2">
-        <button onClick={onCancel} className="text-white/60 hover:text-white transition-colors">
-          <X size={16} />
-        </button>
-      </div>
+    <div className="relative">
+      <button onClick={onCancel} className="absolute -top-2 -right-2 p-1 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+        <X size={16} className="text-white/60" />
+      </button>
       <div
+        className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${isDragging ? "border-blue-400 bg-blue-400/10" : "border-white/20 hover:border-white/40"}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-lg p-4 transition-colors ${isDragging ? "border-blue-400 bg-blue-400/10" : "border-white/20 hover:border-white/40"}`}>
-        <label className="flex flex-col items-center gap-2 cursor-pointer">
-          <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileSelect} className="hidden" />
+        onDrop={handleDrop}>
+        <input type="file" accept=".pdf" onChange={handleFileInput} className="hidden" id="file-upload" />
+        <label htmlFor="file-upload" className="flex flex-col items-center gap-2 cursor-pointer">
           <Upload size={24} className="text-blue-400" />
-          <div className="text-center">
-            <p className="text-sm text-white/80">Drag and drop your resume here</p>
-            <p className="text-xs text-white/60 mt-1">or click to browse</p>
+          <div className="text-white/80">
+            <p className="font-medium">Drop your resume here</p>
+            <p className="text-sm text-white/60">or click to browse</p>
           </div>
         </label>
+        {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
       </div>
     </div>
   );
