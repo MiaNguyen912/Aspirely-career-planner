@@ -18,9 +18,9 @@ const Button: React.FC<ButtonProps> = ({
   const baseStyles = 'rounded-lg font-medium transition-all duration-200 flex items-center justify-center';
   
   const variantStyles = {
-    primary: 'bg-blue-600/80 hover:bg-blue-700/90 text-white backdrop-blur-sm',
-    secondary: 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/10',
-    ghost: 'bg-transparent hover:bg-white/10 text-white',
+    primary: 'bg-blue-700/60 hover:bg-blue-700/90 text-white backdrop-blur-sm',
+    secondary: 'bg-white/10 hover:bg-white/30 text-white backdrop-blur-sm border border-white/10',
+    ghost: 'bg-transparent hover:bg-white/20 text-white',
   };
   
   const sizeStyles = {
