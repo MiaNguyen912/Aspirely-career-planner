@@ -198,7 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
           <NavItem icon={<User size={20} />} label="Profile" isExpanded={isExpanded} />
           <NavItem icon={<HelpCircle size={20} />} label="Help" isExpanded={isExpanded} />
           <NavItem icon={<Mail size={20} />} label="Contact" isExpanded={isExpanded} />
-          <NavItem icon={<FileUp size={20} />} label="Upload Resume" isExpanded={isExpanded} />
+          <NavItem icon={<FileUp size={20} />} label="Parse Resume" isExpanded={isExpanded} />
         </div>
       </div>
 
