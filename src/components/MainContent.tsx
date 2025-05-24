@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge } from "@xyflow/react";
+import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, Panel } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RootNode, CareerNode, SkillNode } from "./nodes";
 import { initialNodes, initialEdges, FileInfo, MajorInfo } from "@/data/nodeData";
@@ -62,7 +62,15 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  useEffect(() => {
+    setNodes(initialNodes);
+
+    setEdges(initialEdges);
+  }, []);
+
+  const onConnect = useCallback((params: any) => {
+    setEdges((eds) => addEdge({ ...params, type: "smoothstep", animated: true }, eds));
+  }, []);
 
   // Update root node data when fileInfo or majorInfo changes
   useEffect(() => {
@@ -80,14 +88,34 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         return node;
       })
     );
-  }, [fileInfo, majorInfo, setNodes]);
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.target === "root" && edge.type === "smoothstep") {
+          return { ...edge, source: "root" };
+        }
+        return edge;
+      })
+    );
+  }, [fileInfo, majorInfo, setNodes, setEdges]);
 
   return (
     <main className={`pt-16 min-h-screen transition-all duration-300 ease-in-out ${isExpanded ? "ml-[20%]" : "ml-16"}`}>
       <div style={{ width: "100vw", height: "calc(100vh - 16px)" }}>
-        <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} nodeTypes={nodeTypes} fitView>
-          <Controls style={{ marginBottom: "70px" }} />
-          <Background bgColor="white" color="#A9A9A9" gap={12} size={1} />
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          fitView
+          fitViewOptions={{ padding: 0.2 }}
+          defaultEdgeOptions={{
+            type: "smoothstep",
+            animated: true,
+          }}>
+          <Controls style={{ marginBottom: "70px", borderRadius: "8px" }} />
+          <Background bgColor="white" color="black" gap={12} size={1} />
         </ReactFlow>
       </div>
     </main>

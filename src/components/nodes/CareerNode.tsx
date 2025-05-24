@@ -1,30 +1,31 @@
 import React from "react";
 import { Briefcase } from "lucide-react";
+import { Handle, Position } from "@xyflow/react";
 import { CareerNodeData } from "@/data/nodeData";
 
 export const CareerNode: React.FC<{ data: CareerNodeData }> = ({ data }) => {
   return (
-    <div className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 backdrop-blur-md p-4 rounded-lg border border-emerald-400/30 min-w-[250px] shadow-lg shadow-emerald-500/10">
-      <div className="flex items-center gap-2 mb-3">
-        <div className="text-emerald-400 bg-emerald-400/10 p-2 rounded-lg">
-          <Briefcase size={20} />
-        </div>
-        <span className="text-white font-medium">{data.name}</span>
-      </div>
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between text-white/80 bg-white/5 p-2 rounded-lg">
-          <span>Average Salary</span>
-          <span className="text-emerald-400">${data.averageSalary.toLocaleString()}</span>
-        </div>
-        <div className="flex justify-between text-white/80 bg-white/5 p-2 rounded-lg">
-          <span>Demand in 5 Years</span>
-          <span className="text-emerald-400">+{data.demandIn5Years}%</span>
-        </div>
-        <div className="flex justify-between text-white/80 bg-white/5 p-2 rounded-lg">
-          <span>Gender Distribution</span>
-          <div className="flex gap-2">
-            <span className="text-blue-400">{data.percentageMen}% M</span>
-            <span className="text-pink-400">{data.percentageWomen}% F</span>
+    <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-lg shadow-lg text-white min-w-[200px]">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-white" />
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-white" />
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">{data.name}</h3>
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="bg-white/10 p-2 rounded">
+            <p className="text-white/70">Salary</p>
+            <p className="font-medium">${data.averageSalary.toLocaleString()}</p>
+          </div>
+          <div className="bg-white/10 p-2 rounded">
+            <p className="text-white/70">Demand</p>
+            <p className="font-medium">+{data.demandIn5Years}%</p>
+          </div>
+          <div className="bg-white/10 p-2 rounded">
+            <p className="text-white/70">Men</p>
+            <p className="font-medium">{data.percentageMen}%</p>
+          </div>
+          <div className="bg-white/10 p-2 rounded">
+            <p className="text-white/70">Women</p>
+            <p className="font-medium">{data.percentageWomen}%</p>
           </div>
         </div>
       </div>

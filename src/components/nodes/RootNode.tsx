@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
 import { RootNodeData } from "@/data/nodeData";
+import { Handle, Position } from "@xyflow/react";
 
 export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -55,6 +56,7 @@ export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
 
   return (
     <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-md p-4 rounded-lg border border-blue-400/30 min-w-[300px] shadow-lg shadow-blue-500/10">
+      <Handle type="source" position={Position.Right} className="w-3 h-3 bg-white" />
       <div className="flex items-center gap-2 mb-2">
         <div className="text-blue-400 bg-blue-400/10 p-2 rounded-lg">
           <FileText size={20} />
