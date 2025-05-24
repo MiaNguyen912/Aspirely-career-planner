@@ -42,7 +42,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "root",
     type: "rootNode",
-    position: { x: 0, y: 200 },
+    position: { x: 50, y: 300 },
     data: {
       fileInfo: null,
       majorInfo: null,
@@ -51,7 +51,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "career-1",
     type: "careerNode",
-    position: { x: 200, y: 150 },
+    position: { x: 300, y: 200 },
     data: {
       name: "Software Engineer",
       averageSalary: 120000,
@@ -63,7 +63,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "career-2",
     type: "careerNode",
-    position: { x: 200, y: 300 },
+    position: { x: 300, y: 400 },
     data: {
       name: "Data Scientist",
       averageSalary: 130000,
@@ -75,7 +75,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-python-se",
     type: "skillNode",
-    position: { x: 300, y: 0 },
+    position: { x: 550, y: 150 },
     data: {
       name: "Python Programming",
       careerId: "career-1",
@@ -86,7 +86,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-python-ds",
     type: "skillNode",
-    position: { x: 300, y: 150 },
+    position: { x: 550, y: 350 },
     data: {
       name: "Python Programming",
       careerId: "career-2",
@@ -97,7 +97,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-ml-se",
     type: "skillNode",
-    position: { x: 200, y: 450 },
+    position: { x: 550, y: 250 },
     data: {
       name: "Machine Learning",
       careerId: "career-1",
@@ -108,7 +108,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-ml-ds",
     type: "skillNode",
-    position: { x: 600, y: 450 },
+    position: { x: 550, y: 450 },
     data: {
       name: "Machine Learning",
       careerId: "career-2",
@@ -119,7 +119,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-web",
     type: "skillNode",
-    position: { x: 200, y: 600 },
+    position: { x: 800, y: 200 },
     data: {
       name: "Web Development",
       careerId: "career-1",
@@ -130,7 +130,7 @@ export const initialNodes: CustomNode[] = [
   {
     id: "skill-data",
     type: "skillNode",
-    position: { x: 600, y: 600 },
+    position: { x: 800, y: 400 },
     data: {
       name: "Data Analysis",
       careerId: "career-2",

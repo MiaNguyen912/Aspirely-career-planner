@@ -62,12 +62,15 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback(
-    (params: any) => {
-      setEdges((eds) => addEdge({ ...params, type: "smoothstep", animated: true }, eds));
-    },
-    [setEdges]
-  );
+  useEffect(() => {
+    setNodes(initialNodes);
+
+    setEdges(initialEdges);
+  }, []);
+
+  const onConnect = useCallback((params: any) => {
+    setEdges((eds) => addEdge({ ...params, type: "smoothstep", animated: true }, eds));
+  }, []);
 
   // Update root node data when fileInfo or majorInfo changes
   useEffect(() => {
@@ -85,7 +88,15 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         return node;
       })
     );
-  }, [fileInfo, majorInfo, setNodes]);
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.target === "root" && edge.type === "smoothstep") {
+          return { ...edge, source: "root" };
+        }
+        return edge;
+      })
+    );
+  }, [fileInfo, majorInfo, setNodes, setEdges]);
 
   return (
     <main className={`pt-16 min-h-screen transition-all duration-300 ease-in-out ${isExpanded ? "ml-[20%]" : "ml-16"}`}>

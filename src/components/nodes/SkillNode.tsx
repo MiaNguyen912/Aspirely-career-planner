@@ -1,10 +1,12 @@
 import React from "react";
 import { BookOpen, CheckCircle2 } from "lucide-react";
 import { SkillNodeData } from "@/data/nodeData";
+import { Handle, Position } from "@xyflow/react";
 
 export const SkillNode: React.FC<{ data: SkillNodeData }> = ({ data }) => {
   return (
     <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 backdrop-blur-md p-4 rounded-lg border border-amber-400/30 min-w-[250px] shadow-lg shadow-amber-500/10">
+      <Handle type="target" position={Position.Left} className="w-3 h-3 bg-white" />
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="text-amber-400 bg-amber-400/10 p-2 rounded-lg">
