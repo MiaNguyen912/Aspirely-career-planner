@@ -1,13 +1,26 @@
 "use client";
-import { ReactFlow } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+interface FileInfo {
+  name: string;
+  type: string;
+  size: number;
+  lastModified: number;
+}
 
 export default function Platform() {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [uploadedFile, setUploadedFile] = useState<FileInfo | null>(null);
+
+  useEffect(() => {
+    const storedFile = localStorage.getItem("uploadedResume");
+    if (storedFile) {
+      setUploadedFile(JSON.parse(storedFile));
+    }
+  }, []);
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -20,7 +33,7 @@ export default function Platform() {
         <div className="fixed inset-0 bg-[url('https://images.pexels.com/photos/3075993/pexels-photo-3075993.jpeg')] bg-cover bg-center opacity-5 mix-blend-overlay"></div>
 
         <Header />
-        <Sidebar isExpanded={isExpanded} toggleSidebar={toggleSidebar} />
+        <Sidebar isExpanded={isExpanded} toggleSidebar={toggleSidebar} uploadedFile={uploadedFile} />
         <MainContent isExpanded={isExpanded} />
       </div>
     </>
