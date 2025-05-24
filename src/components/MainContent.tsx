@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { ReactFlow, Controls, Background, useNodesState, useEdgesState, addEdge, Connection } from "@xyflow/react";
+
+import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, Panel, Connection } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RootNode, CareerNode, SkillNode } from "./nodes";
 import { initialNodes, initialEdges, FileInfo, MajorInfo } from "@/data/nodeData";
@@ -68,6 +69,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
     [setEdges]
   );
 
+
   // Update root node data when fileInfo or majorInfo changes
   useEffect(() => {
     setNodes((nds) =>
@@ -84,7 +86,15 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         return node;
       })
     );
-  }, [fileInfo, majorInfo, setNodes]);
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.target === "root" && edge.type === "smoothstep") {
+          return { ...edge, source: "root" };
+        }
+        return edge;
+      })
+    );
+  }, [fileInfo, majorInfo, setNodes, setEdges]);
 
   return (
     <main className={`pt-16 min-h-screen transition-all duration-300 ease-in-out ${isExpanded ? "ml-[20%]" : "ml-16"}`}>
@@ -108,6 +118,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         >
           <Controls style={{ marginBottom: "10px" }} />
           <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
+
         </ReactFlow>
       </div>
     </main>

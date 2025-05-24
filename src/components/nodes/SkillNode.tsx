@@ -1,20 +1,26 @@
 import React from "react";
-import { BookOpen } from "lucide-react";
-import { Handle, Position } from "@xyflow/react";
+import { BookOpen, CheckCircle2 } from "lucide-react";
 import { SkillNodeData } from "@/data/nodeData";
+import { Handle, Position } from "@xyflow/react";
 import { handleStyle } from "@/styles/flowStyles";
 
 export const SkillNode: React.FC<{ data: SkillNodeData }> = ({ data }) => {
   return (
     <>
       <Handle type="target" position={Position.Left} id="skill-target" style={handleStyle} />
-      
       <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/20 backdrop-blur-md p-4 rounded-lg border border-amber-400/30 min-w-[250px] shadow-lg shadow-amber-500/10">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="text-amber-400 bg-amber-400/10 p-2 rounded-lg">
-            <BookOpen size={20} />
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="text-amber-400 bg-amber-400/10 p-2 rounded-lg">
+              <BookOpen size={20} />
+            </div>
+            <span className="text-white font-medium">{data.name}</span>
           </div>
-          <span className="text-white font-medium">{data.name}</span>
+          {data.isCompleted && (
+            <div className="text-green-400 bg-green-400/10 p-1.5 rounded-lg">
+              <CheckCircle2 size={16} />
+            </div>
+          )}
         </div>
         <div className="space-y-3">
           <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
@@ -23,7 +29,7 @@ export const SkillNode: React.FC<{ data: SkillNodeData }> = ({ data }) => {
           </div>
           {data.resources.length > 0 && (
             <div className="space-y-1 bg-white/5 p-2 rounded-lg">
-              <p className="text-white/60 text-xs">Resources:</p>
+              <p className="text-white/60 text-xs">Resources for {data.careerId.replace("career-", "Career ")}:</p>
               <ul className="space-y-1">
                 {data.resources.map((resource, index) => (
                   <li key={index}>
