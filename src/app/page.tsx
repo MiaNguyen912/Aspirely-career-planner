@@ -1,16 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useRouter } from "next/navigation";
 
+interface Major {
+  id: string;
+  name: string;
+  type: string;
+  division: string;
+  specializations: string[];
+}
+
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [major, setMajor] = useState("");
+  const [majors, setMajors] = useState<Major[]>([]);
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("/api/majors");
+        const data = await response.json();
+        if (data.status === 200) {
+          setMajors(data.data);
+        } else {
+          setError("Failed to load majors");
+        }
+      } catch (error) {
+        setError("Error loading majors");
+        console.error("Error fetching majors:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMajors();
+  }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -57,8 +88,9 @@ export default function Home() {
     localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
 
     // Store major information in localStorage
+    const selectedMajor = majors.find((m) => m.id === major);
     const majorInfo = {
-      name: e.currentTarget.querySelector("select")?.options[e.currentTarget.querySelector("select")?.selectedIndex || 0].text || "",
+      name: selectedMajor?.name || "",
       code: major,
     };
     localStorage.setItem("selectedMajor", JSON.stringify(majorInfo));
@@ -107,20 +139,23 @@ export default function Home() {
               value={major}
               onChange={(e) => setMajor(e.target.value)}
               className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-              required>
+              required
+              disabled={isLoading}>
               <option value="" disabled>
-                Select your major
+                {isLoading ? "Loading majors..." : "Select your major"}
               </option>
-              <option value="computer-science">Computer Science</option>
-              <option value="engineering">Engineering</option>
-              <option value="business">Business</option>
-              <option value="arts">Arts</option>
-              <option value="science">Science</option>
-              <option value="other">Other</option>
+              {majors.map((major) => (
+                <option key={major.id} value={major.id}>
+                  {major.name}
+                </option>
+              ))}
             </select>
           </div>
 
-          <button type="submit" className="w-full bg-blue-600/80 hover:bg-blue-700/90 text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 backdrop-blur-sm">
+          <button
+            type="submit"
+            className="w-full bg-blue-600/80 hover:bg-blue-700/90 text-white py-3 px-6 rounded-lg font-medium transition-all duration-200 backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}>
             Submit Application
           </button>
         </form>
