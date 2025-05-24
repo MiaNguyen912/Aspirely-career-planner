@@ -1,6 +1,4 @@
 "use client";
-import { ReactFlow } from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import MainContent from "../../components/MainContent";

@@ -8,10 +8,39 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [major, setMajor] = useState("");
+  const [error, setError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files[0];
+    if (file && (file.type === "application/pdf" || file.type === "application/msword" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+      setSelectedFile(file);
+      setError("");
+    } else {
+      setError("Please upload a valid file (PDF or DOC)");
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedFile) {
+      setError("Please upload your resume before submitting");
+      return;
+    }
     router.push("/home");
   };
 
@@ -34,10 +63,16 @@ export default function Home() {
               <input type="file" id="resume" accept=".pdf,.doc,.docx" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} className="hidden" />
               <label
                 htmlFor="resume"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-white/20 rounded-lg cursor-pointer bg-white/5 hover:bg-white/10 transition-colors text-white">
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`flex items-center justify-center gap-2 w-full px-4 py-3 border border-white/20 rounded-lg cursor-pointer transition-colors text-white ${
+                  isDragging ? "bg-white/20 border-blue-500" : "bg-white/5 hover:bg-white/10"
+                }`}>
                 <Upload size={20} />
-                {selectedFile ? selectedFile.name : "Choose file"}
+                {selectedFile ? selectedFile.name : "Choose file or drag and drop"}
               </label>
+              {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
             </div>
           </div>
 
