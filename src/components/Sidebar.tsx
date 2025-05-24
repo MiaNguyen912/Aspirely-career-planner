@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File } from "lucide-react";
 import FileUploadArea from "./FileUploadArea";
 
@@ -35,6 +35,37 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isExpanded }) => {
 
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFile }) => {
   const [showUploadArea, setShowUploadArea] = useState(false);
+  const [major, setMajor] = useState("");
+
+  useEffect(() => {
+    // Load major from localStorage
+    const storedMajor = localStorage.getItem("selectedMajor");
+    if (storedMajor) {
+      try {
+        const parsedMajor = JSON.parse(storedMajor);
+        setMajor(parsedMajor.code);
+      } catch (error) {
+        console.error("Error parsing stored major:", error);
+      }
+    }
+  }, []);
+
+  // Listen for changes to selectedMajor in localStorage
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "selectedMajor" && e.newValue) {
+        try {
+          const parsedMajor = JSON.parse(e.newValue);
+          setMajor(parsedMajor.code);
+        } catch (error) {
+          console.error("Error parsing stored major:", error);
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const handleFileUpload = (file: File) => {
     const fileInfo = {
@@ -47,44 +78,79 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
     window.location.reload();
   };
 
+  const handleMajorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedMajor = e.target.value;
+    setMajor(selectedMajor);
+
+    // Store major info in localStorage
+    const majorInfo = {
+      name: e.target.options[e.target.selectedIndex].text,
+      code: selectedMajor,
+    };
+    localStorage.setItem("selectedMajor", JSON.stringify(majorInfo));
+  };
+
   return (
     <aside className={`fixed top-16 left-0 bottom-0 bg-black/40 backdrop-blur-md border-r border-white/10 z-20 transition-all duration-300 ease-in-out ${isExpanded ? "w-[20%]" : "w-16"}`}>
       <div className="flex flex-col h-full py-6">
         <div className={`px-4 mb-6 ${!isExpanded && "px-2"}`}>
           {isExpanded ? (
-            <div className="bg-white/5 rounded-lg p-3 border border-white/10 relative group">
-              <div className="flex items-center gap-3 mb-2">
-                <FileText size={20} className="text-blue-400" />
-                <span className="text-white font-medium">Resume</span>
+            <>
+              <div className="bg-white/5 rounded-lg p-3 border border-white/10 relative group mb-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <FileText size={20} className="text-blue-400" />
+                  <span className="text-white font-medium">Resume</span>
+                </div>
+                {uploadedFile ? (
+                  <>
+                    <div className="text-white/80 text-sm">
+                      <p className="truncate">{uploadedFile.name}</p>
+                      <p className="text-white/60 text-xs mt-1">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
+                    </div>
+                    {!showUploadArea ? (
+                      <button onClick={() => setShowUploadArea(true)} className="mt-3 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                        <Upload size={16} />
+                        <span>Upload New Resume</span>
+                      </button>
+                    ) : (
+                      <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {!showUploadArea ? (
+                      <button onClick={() => setShowUploadArea(true)} className="mt-2 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                        <Upload size={16} />
+                        <span>Upload Resume</span>
+                      </button>
+                    ) : (
+                      <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
+                    )}
+                  </>
+                )}
               </div>
-              {uploadedFile ? (
-                <>
-                  <div className="text-white/80 text-sm">
-                    <p className="truncate">{uploadedFile.name}</p>
-                    <p className="text-white/60 text-xs mt-1">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
-                  </div>
-                  {!showUploadArea ? (
-                    <button onClick={() => setShowUploadArea(true)} className="mt-3 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                      <Upload size={16} />
-                      <span>Upload New Resume</span>
-                    </button>
-                  ) : (
-                    <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
-                  )}
-                </>
-              ) : (
-                <>
-                  {!showUploadArea ? (
-                    <button onClick={() => setShowUploadArea(true)} className="mt-2 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                      <Upload size={16} />
-                      <span>Upload Resume</span>
-                    </button>
-                  ) : (
-                    <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
-                  )}
-                </>
-              )}
-            </div>
+
+              <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+                <div className="flex items-center gap-3 mb-2">
+                  <FileText size={20} className="text-blue-400" />
+                  <span className="text-white font-medium">Major</span>
+                </div>
+                <select
+                  value={major}
+                  onChange={handleMajorChange}
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                  <option value="" disabled>
+                    Select your major
+                  </option>
+                  <option value="computer-science">Computer Science</option>
+                  <option value="engineering">Engineering</option>
+                  <option value="business">Business</option>
+                  <option value="arts">Arts</option>
+                  <option value="science">Science</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </>
           ) : (
             <div className="relative group">
               <div className="flex items-center justify-center">
