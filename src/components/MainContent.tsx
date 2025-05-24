@@ -7,6 +7,7 @@ import "@xyflow/react/dist/style.css";
 import { RootNode, CareerNode, SkillNode } from "./nodes";
 import { initialNodes, initialEdges, FileInfo, MajorInfo } from "@/data/nodeData";
 import { defaultEdgeOptions } from "@/styles/flowStyles";
+import { getLayoutedElements } from "@/utils/layout";
 
 interface MainContentProps {
   isExpanded: boolean;
@@ -69,6 +70,24 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
     [setEdges]
   );
 
+  // Add useLayoutEffect to apply initial layout
+  useEffect(() => {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+      initialNodes,
+      initialEdges
+    );
+    setNodes(layoutedNodes);
+    setEdges(layoutedEdges);
+  }, []);
+
+  const onLayout = useCallback(() => {
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+      nodes,
+      edges
+    );
+    setNodes([...layoutedNodes]);
+    setEdges([...layoutedEdges]);
+  }, [nodes, edges]);
 
   // Update root node data when fileInfo or majorInfo changes
   useEffect(() => {
@@ -118,7 +137,14 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
         >
           <Controls style={{ marginBottom: "10px" }} />
           <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
-
+          <Panel position="top-right">
+            <button
+              onClick={onLayout}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              Layout
+            </button>
+          </Panel>
         </ReactFlow>
       </div>
     </main>
