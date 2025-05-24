@@ -42,6 +42,11 @@ export default function Home() {
       return;
     }
 
+    if (!major) {
+      setError("Please select your major");
+      return;
+    }
+
     // Store file information in localStorage
     const fileInfo = {
       name: selectedFile.name,
@@ -50,6 +55,13 @@ export default function Home() {
       lastModified: selectedFile.lastModified,
     };
     localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+
+    // Store major information in localStorage
+    const majorInfo = {
+      name: e.currentTarget.querySelector("select")?.options[e.currentTarget.querySelector("select")?.selectedIndex || 0].text || "",
+      code: major,
+    };
+    localStorage.setItem("selectedMajor", JSON.stringify(majorInfo));
 
     router.push("/home");
   };

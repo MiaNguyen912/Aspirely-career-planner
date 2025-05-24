@@ -87,7 +87,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
       <div style={{ width: "100vw", height: "calc(100vh - 16px)" }}>
         <ReactFlow nodes={nodes} edges={edges} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} nodeTypes={nodeTypes} fitView>
           <Controls style={{ marginBottom: "70px" }} />
-          <Background bgColor="white" color="black" gap={12} size={1} />
+          <Background bgColor="white" color="#A9A9A9" gap={12} size={1} />
         </ReactFlow>
       </div>
     </main>
