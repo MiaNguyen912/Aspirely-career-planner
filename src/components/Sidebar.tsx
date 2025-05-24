@@ -1,5 +1,6 @@
-import React from "react";
-import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import React, { useState } from "react";
+import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload } from "lucide-react";
+import FileUploadArea from "./FileUploadArea";
 
 type SidebarProps = {
   isExpanded: boolean;
@@ -33,23 +34,57 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isExpanded }) => {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFile }) => {
+  const [showUploadArea, setShowUploadArea] = useState(false);
+
+  const handleFileUpload = (file: File) => {
+    const fileInfo = {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      lastModified: file.lastModified,
+    };
+    localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+    window.location.reload();
+  };
+
   return (
     <aside className={`fixed top-16 left-0 bottom-0 bg-black/40 backdrop-blur-md border-r border-white/10 z-20 transition-all duration-300 ease-in-out ${isExpanded ? "w-[20%]" : "w-16"}`}>
       <div className="flex flex-col h-full py-6">
-        {uploadedFile && (
-          <div className="px-4 mb-6">
-            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-              <div className="flex items-center gap-3 mb-2">
-                <FileText size={20} className="text-blue-400" />
-                <span className="text-white font-medium">Uploaded Resume</span>
-              </div>
-              <div className="text-white/80 text-sm">
-                <p className="truncate">{uploadedFile.name}</p>
-                <p className="text-white/60 text-xs mt-1">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
-              </div>
+        <div className="px-4 mb-6">
+          <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+            <div className="flex items-center gap-3 mb-2">
+              <FileText size={20} className="text-blue-400" />
+              <span className="text-white font-medium">Resume</span>
             </div>
+            {uploadedFile ? (
+              <>
+                <div className="text-white/80 text-sm">
+                  <p className="truncate">{uploadedFile.name}</p>
+                  <p className="text-white/60 text-xs mt-1">{(uploadedFile.size / 1024).toFixed(1)} KB</p>
+                </div>
+                {!showUploadArea ? (
+                  <button onClick={() => setShowUploadArea(true)} className="mt-3 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                    <Upload size={16} />
+                    <span>Upload New Resume</span>
+                  </button>
+                ) : (
+                  <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
+                )}
+              </>
+            ) : (
+              <>
+                {!showUploadArea ? (
+                  <button onClick={() => setShowUploadArea(true)} className="mt-2 flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                    <Upload size={16} />
+                    <span>Upload Resume</span>
+                  </button>
+                ) : (
+                  <FileUploadArea onFileUpload={handleFileUpload} onCancel={() => setShowUploadArea(false)} />
+                )}
+              </>
+            )}
           </div>
-        )}
+        </div>
         <div className="flex-1 space-y-1 px-2">
           <NavItem icon={<User size={20} />} label="Profile" isExpanded={isExpanded} />
           <NavItem icon={<HelpCircle size={20} />} label="Help" isExpanded={isExpanded} />
