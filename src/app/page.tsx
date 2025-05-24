@@ -41,6 +41,16 @@ export default function Home() {
       setError("Please upload your resume before submitting");
       return;
     }
+
+    // Store file information in localStorage
+    const fileInfo = {
+      name: selectedFile.name,
+      type: selectedFile.type,
+      size: selectedFile.size,
+      lastModified: selectedFile.lastModified,
+    };
+    localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+
     router.push("/home");
   };
 
