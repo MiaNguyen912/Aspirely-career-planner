@@ -59,7 +59,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              prompt: `Analyze my resume in 1 sentence: ${storedResumeText}`,
+              resume: `${storedResumeText}`,
             }),
           });
 

@@ -150,7 +150,6 @@ export const initialEdges: Edge[] = [
     target: "career-1",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#10b981", strokeWidth: 2 },
   },
   {
     id: "root-career-2",
@@ -158,7 +157,6 @@ export const initialEdges: Edge[] = [
     target: "career-2",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#10b981", strokeWidth: 2 },
   },
   // Software Engineer skills
   {
@@ -167,7 +165,6 @@ export const initialEdges: Edge[] = [
     target: "skill-python-se",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
   {
     id: "career-1-skill-ml-se",
@@ -175,7 +172,6 @@ export const initialEdges: Edge[] = [
     target: "skill-ml-se",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
   {
     id: "career-1-skill-web",
@@ -183,7 +179,6 @@ export const initialEdges: Edge[] = [
     target: "skill-web",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
   // Data Scientist skills
   {
@@ -192,7 +187,6 @@ export const initialEdges: Edge[] = [
     target: "skill-python-ds",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
   {
     id: "career-2-skill-ml-ds",
@@ -200,7 +194,6 @@ export const initialEdges: Edge[] = [
     target: "skill-ml-ds",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
   {
     id: "career-2-skill-data",
@@ -208,6 +201,5 @@ export const initialEdges: Edge[] = [
     target: "skill-data",
     type: "smoothstep",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
   },
 ];
