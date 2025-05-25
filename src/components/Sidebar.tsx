@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { User, HelpCircle, Mail, ChevronLeft, ChevronRight, FileText, Upload, File, FileUp, BookOpenText } from "lucide-react";
 import FileUploadArea from "./FileUploadArea";
 
+interface Major {
+  id: string;
+  name: string;
+  type: string;
+  division: string;
+  specializations: string[];
+}
+
 type SidebarProps = {
   isExpanded: boolean;
   toggleSidebar: () => void;
@@ -36,6 +44,30 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, isExpanded }) => {
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFile }) => {
   const [showUploadArea, setShowUploadArea] = useState(false);
   const [major, setMajor] = useState("");
+  const [majors, setMajors] = useState<Major[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("/api/majors");
+        const data = await response.json();
+        if (data.status === 200) {
+          setMajors(data.data);
+        } else {
+          setError("Failed to load majors");
+        }
+      } catch (error) {
+        setError("Error loading majors");
+        console.error("Error fetching majors:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMajors();
+  }, []);
 
   useEffect(() => {
     // Load major from localStorage
@@ -79,13 +111,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
   };
 
   const handleMajorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedMajor = e.target.value;
-    setMajor(selectedMajor);
+    const selectedMajorId = e.target.value;
+    setMajor(selectedMajorId);
 
     // Store major info in localStorage
+    const selectedMajor = majors.find((m) => m.id === selectedMajorId);
     const majorInfo = {
-      name: e.target.options[e.target.selectedIndex].text,
-      code: selectedMajor,
+      name: selectedMajor?.name || "",
+      code: selectedMajorId,
     };
     localStorage.setItem("selectedMajor", JSON.stringify(majorInfo));
   };
@@ -138,17 +171,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
                 <select
                   value={major}
                   onChange={handleMajorChange}
-                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                  className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/20 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  disabled={isLoading}>
                   <option value="" disabled>
-                    Select your major
+                    {isLoading ? "Loading majors..." : "Select your major"}
                   </option>
-                  <option value="computer-science">Computer Science</option>
-                  <option value="engineering">Engineering</option>
-                  <option value="business">Business</option>
-                  <option value="arts">Arts</option>
-                  <option value="science">Science</option>
-                  <option value="other">Other</option>
+                  {majors.map((major) => (
+                    <option key={major.id} value={major.id}>
+                      {major.name}
+                    </option>
+                  ))}
                 </select>
+                {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
               </div>
             </>
           ) : (
