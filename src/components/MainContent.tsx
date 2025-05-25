@@ -137,7 +137,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           defaultEdgeOptions={defaultEdgeOptions}
           fitView
           fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.5}
+          minZoom={0.2}
           maxZoom={2}
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           elementsSelectable={true}
