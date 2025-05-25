@@ -18,6 +18,7 @@ type SidebarProps = {
     type: string;
     size: number;
     lastModified: number;
+    url?: string;
   } | null;
 };
 
@@ -100,13 +101,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
   }, []);
 
   const handleFileUpload = (file: File) => {
-    const fileInfo = {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      lastModified: file.lastModified,
-    };
-    localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+    // The FileUploadArea component now handles storing the complete file info
+    // Just trigger the page reload to reflect the changes
     window.location.reload();
   };
 

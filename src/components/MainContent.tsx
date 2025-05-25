@@ -103,6 +103,8 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === "root" && node.type === "rootNode") {
+          // Log the fileInfo to debug
+          console.log("File info being passed to root node:", fileInfo);
           return {
             ...node,
             data: {
