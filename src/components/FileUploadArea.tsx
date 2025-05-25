@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from "react";
 import { Upload, X } from "lucide-react";
+import { readPdf } from "../utils/read-pdf";
 
 interface FileUploadAreaProps {
   onFileUpload: (file: File) => void;
@@ -23,12 +24,14 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
   }, []);
 
   const handleDrop = useCallback(
-    (e: React.DragEvent) => {
+    async (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragging(false);
       setError(null);
 
       const file = e.dataTransfer.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      const text = await readPdf(fileUrl);
       if (!file) {
         setError("Please select a file");
         return;
@@ -53,6 +56,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
             url: event.target.result.toString()
           };
           localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+          localStorage.setItem("uploadedResumeText", text);
           onFileUpload(file);
         }
       };
@@ -62,13 +66,18 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
   );
 
   const handleFileInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       setError(null);
       const file = e.target.files?.[0];
+
+      
       if (!file) {
         setError("Please select a file");
         return;
       }
+
+      const fileUrl = URL.createObjectURL(file);
+      const text = await readPdf(fileUrl);
 
       if (file.type !== "application/pdf") {
         setError("Please upload a PDF file");
@@ -89,6 +98,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
             url: event.target.result.toString()
           };
           localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
+          localStorage.setItem("uploadedResumeText", text);
           onFileUpload(file);
         }
       };

@@ -9,17 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/genai": "^1.0.1",
+    "@google/generative-ai": "^0.24.1",
     "@types/axios": "^0.14.4",
     "@types/dagre": "^0.7.52",
+    "@types/pdf-parse": "^1.1.5",
     "@xyflow/react": "^12.6.4",
     "axios": "^1.9.0",
+    "canvas": "^3.1.0",
     "dagre": "^0.8.5",
     "docx": "^9.5.0",
     "lucide-react": "^0.344.0",
     "mammoth": "^1.9.0",
     "next": "^14.1.0",
     "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.2.133",
+    "pdfjs-dist": "^3.11.174",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "xlsx": "^0.18.5"
