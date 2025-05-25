@@ -9,6 +9,7 @@ interface FileInfo {
   type: string;
   size: number;
   lastModified: number;
+  url?: string;
 }
 
 export default function Platform() {

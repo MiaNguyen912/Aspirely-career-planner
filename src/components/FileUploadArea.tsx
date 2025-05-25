@@ -43,8 +43,16 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          const base64String = event.target.result.toString().split(",")[1];
-          localStorage.setItem("uploadedResumeFile", base64String);
+          // Log to debug
+          console.log("File read complete, storing data URL");
+          const fileInfo = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            lastModified: file.lastModified,
+            url: event.target.result.toString()
+          };
+          localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
           onFileUpload(file);
         }
       };
@@ -71,8 +79,16 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileUpload, onCancel 
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          const base64String = event.target.result.toString().split(",")[1];
-          localStorage.setItem("uploadedResumeFile", base64String);
+          // Log to debug
+          console.log("File read complete, storing data URL");
+          const fileInfo = {
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            lastModified: file.lastModified,
+            url: event.target.result.toString()
+          };
+          localStorage.setItem("uploadedResume", JSON.stringify(fileInfo));
           onFileUpload(file);
         }
       };
