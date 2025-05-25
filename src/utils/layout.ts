@@ -1,11 +1,11 @@
-import dagre from 'dagre';
-import { Edge } from '@xyflow/react';
-import { CustomNode } from '@/data/nodeData';
+import dagre from "dagre";
+import { Edge } from "@xyflow/react";
+import { CustomNode } from "@/data/nodeData";
 
 const NODE_WIDTH = 300;
 const NODE_HEIGHT = 200;
 
-export function getLayoutedElements(nodes: CustomNode[], edges: Edge[], direction = 'LR') {
+export function getLayoutedElements(nodes: CustomNode[], edges: Edge[], direction = "LR") {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
   dagreGraph.setGraph({ rankdir: direction, nodesep: 100, ranksep: 200 });
@@ -25,35 +25,43 @@ export function getLayoutedElements(nodes: CustomNode[], edges: Edge[], directio
   // Get new positions
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
-    const nodesInSameColumn = nodes.filter(n => 
-      Math.abs(dagreGraph.node(n.id).x - nodeWithPosition.x) < 1
-    ).sort((a, b) => {
-      if (a.type === 'skillNode' && b.type === 'skillNode') {
-        const aData = a.data as any, bData = b.data as any;
-        return aData.careerId === bData.careerId 
-          ? 0 
-          : aData.careerId.localeCompare(bData.careerId);
-      }
-      return 0;
-    });
+    const nodesInSameColumn = nodes
+      .filter((n) => Math.abs(dagreGraph.node(n.id).x - nodeWithPosition.x) < 1)
+      .sort((a, b) => {
+        if (a.type === "skillNode" && b.type === "skillNode") {
+          const aData = a.data as any,
+            bData = b.data as any;
+          return aData.careerId === bData.careerId ? 0 : aData.careerId.localeCompare(bData.careerId);
+        }
+        return 0;
+      });
 
     let yPosition = nodeWithPosition.y;
     if (nodesInSameColumn.length > 1) {
-      const spacing = node.type === 'careerNode' ? NODE_HEIGHT + 150 : NODE_HEIGHT + 50;
+      const spacing = node.type === "careerNode" ? NODE_HEIGHT + 150 : NODE_HEIGHT + 50;
       const totalHeight = (nodesInSameColumn.length - 1) * spacing;
-      const centerY = (Math.min(...nodesInSameColumn.map(n => dagreGraph.node(n.id).y)) + 
-                      Math.max(...nodesInSameColumn.map(n => dagreGraph.node(n.id).y))) / 2;
-      yPosition = centerY - (totalHeight / 2) + (nodesInSameColumn.indexOf(node) * spacing);
+      const centerY = (Math.min(...nodesInSameColumn.map((n) => dagreGraph.node(n.id).y)) + Math.max(...nodesInSameColumn.map((n) => dagreGraph.node(n.id).y))) / 2;
+      yPosition = centerY - totalHeight / 2 + nodesInSameColumn.indexOf(node) * spacing;
+    }
+
+    // Adjust x position based on node type
+    let xPosition = nodeWithPosition.x;
+    if (node.type === "rootNode") {
+      xPosition = 100; // Keep root node on the far left
+    } else if (node.type === "careerNode") {
+      xPosition = 600; // Move career nodes further right
+    } else if (node.type === "skillNode") {
+      xPosition = 1100; // Keep skill nodes on the far right
     }
 
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - NODE_WIDTH / 2,
+        x: xPosition - NODE_WIDTH / 2,
         y: yPosition - NODE_HEIGHT / 2,
       },
     };
   });
 
   return { nodes: layoutedNodes, edges };
-} 
+}

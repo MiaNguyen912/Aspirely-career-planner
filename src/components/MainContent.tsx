@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
-import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, Panel, Connection } from "@xyflow/react";
+import { ReactFlow, MiniMap, Controls, Background, useNodesState, useEdgesState, addEdge, Panel, Connection, ReactFlowInstance, Node, Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { RootNode, CareerNode, SkillNode } from "./nodes";
 import { initialNodes, initialEdges, FileInfo, MajorInfo } from "@/data/nodeData";
@@ -255,14 +255,20 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           nodeTypes={nodeTypes}
           defaultEdgeOptions={defaultEdgeOptions}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.2}
-          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          fitViewOptions={{
+            padding: 0.2,
+            minZoom: 0.5,
+            maxZoom: 1.5,
+            duration: 800,
+            includeHiddenNodes: true,
+          }}
+          defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
           elementsSelectable={true}
           selectNodesOnDrag={false}
           proOptions={{ hideAttribution: true }}>
           <Controls style={{ marginBottom: "10px" }} />
           <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
+          <MiniMap nodeStrokeWidth={3} />
         </ReactFlow>
       </div>
     </main>
