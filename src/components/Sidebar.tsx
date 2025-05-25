@@ -121,6 +121,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, toggleSidebar, uploadedFi
       code: selectedMajorId,
     };
     localStorage.setItem("selectedMajor", JSON.stringify(majorInfo));
+
+    // Dispatch a custom event to notify other components
+    window.dispatchEvent(new Event("majorChanged"));
   };
 
   return (
