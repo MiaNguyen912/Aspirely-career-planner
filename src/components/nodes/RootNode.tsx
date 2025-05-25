@@ -10,30 +10,34 @@ export const RootNode: React.FC<{ data: RootNodeData }> = ({ data }) => {
   const pdfUrl = fileInfo?.url;
 
   return (
-
-    <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-md p-4 rounded-lg border border-blue-400/30 min-w-[300px] shadow-lg shadow-blue-500/10">
-    <Handle type="source" position={Position.Right} id="root-source" style={handleStyle} />
-      <div className="flex items-center gap-2 mb-2">
-        <div className="text-blue-400 bg-blue-400/10 p-2 rounded-lg">
-          <FileText size={20} />
-        </div>
-        {fileInfo ? (
-          <div className="text-white/80 text-sm">
-            <p className="truncate mb-2">{fileInfo.name}</p>
-            <p className="text-white/60 text-xs mb-3">{(fileInfo.size / 1024).toFixed(1)} KB</p>
-            {pdfUrl && (
-              <div className="w-full h-[300px] rounded-lg overflow-hidden border border-blue-400/30 bg-white/5">
-                <iframe src={pdfUrl} className="w-full h-full" title="Resume PDF" />
+    <div className="bg-gradient-to-br from-blue-400 to-purple-400 p-4 rounded-lg shadow-lg text-white w-[400px]">
+      <Handle type="source" position={Position.Right} id="root-source" style={handleStyle} />
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <div className="flex-shrink-0 text-white bg-white/20 p-2 rounded-lg">
+            <FileText size={20} />
+          </div>
+          <div className="min-w-0 flex-1">
+            {fileInfo ? (
+              <div className="text-sm">
+                <div className="truncate font-medium">{fileInfo.name}</div>
+                <p className="text-white/80 text-xs mt-1">{(fileInfo.size / 1024).toFixed(1)} KB</p>
+                {pdfUrl && (
+                  <div className="mt-3 w-full h-[300px] rounded-lg overflow-hidden border border-white/20 bg-white/10">
+                    <iframe src={pdfUrl} className="w-full h-full" title="Resume PDF" />
+                  </div>
+                )}
               </div>
+            ) : (
+              <p className="text-white/80 text-sm">No resume uploaded</p>
             )}
           </div>
-        ) : (
-          <p className="text-white/60 text-sm mb-3">No resume uploaded</p>
-        )}
+        </div>
+
         {majorInfo && (
-          <div className="mt-3 pt-3 border-t border-blue-400/30">
-            <p className="text-white/80 font-medium">{majorInfo.name}</p>
-            <p className="text-white/60 text-xs">{majorInfo.code}</p>
+          <div className="border-t border-white/20 pt-3">
+            <p className="text-lg font-semibold truncate">{majorInfo.name}</p>
+            <p className="text-white/80 text-xs mt-1">{majorInfo.code}</p>
           </div>
         )}
       </div>

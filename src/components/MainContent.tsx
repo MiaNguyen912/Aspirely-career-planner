@@ -51,15 +51,24 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
 
     loadData(); // Load initially
 
-    // Listen for storage changes
+    // Listen for storage changes and custom majorChanged event
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "uploadedResume" || e.key === "selectedMajor") {
         loadData();
       }
     };
 
-    window.addEventListener("storage", handleStorageChange); // add event listener for storage changes
-    return () => window.removeEventListener("storage", handleStorageChange); // remove the event listener to avoid having multiple event listeners
+    const handleMajorChange = () => {
+      loadData();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("majorChanged", handleMajorChange);
+    
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("majorChanged", handleMajorChange);
+    };
   }, []);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -128,7 +137,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           defaultEdgeOptions={defaultEdgeOptions}
           fitView
           fitViewOptions={{ padding: 0.2 }}
-          minZoom={0.5}
+          minZoom={0.2}
           maxZoom={2}
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           elementsSelectable={true}
