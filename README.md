@@ -1,4 +1,4 @@
-- The app is available at https://aspirely-career-planner.vercel.app/home
+- The app is available at https://aspirely-career-planner.vercel.app
 - See our demo at https://youtu.be/SgUovyRo9GU
 
 ## Inspiration
