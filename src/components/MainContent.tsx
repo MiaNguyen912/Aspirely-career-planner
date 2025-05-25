@@ -22,10 +22,11 @@ const nodeTypes = {
 const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
   const [majorInfo, setMajorInfo] = useState<MajorInfo | null>(null);
+  const [resumeAnalysis, setResumeAnalysis] = useState<string | null>(null);
 
   // Load file info and major info from localStorage
   useEffect(() => {
-    const loadData = () => {
+    const loadData = async () => {
       // Load file info
       const storedFile = localStorage.getItem("uploadedResume");
       if (storedFile) {
@@ -47,13 +48,39 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           console.error("Error parsing stored major info:", error);
         }
       }
+
+      // Load and analyze resume text
+      const storedResumeText = localStorage.getItem("uploadedResumeText");
+      if (storedResumeText) {
+        try {
+          const response = await fetch("/api/googleGemini", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt: `Analyze my resume in 1 sentence: ${storedResumeText}`,
+            }),
+          });
+
+          const data = await response.json();
+          if (data.status === 200) {
+            setResumeAnalysis(data.data.response);
+            // console.log(data.data.response);
+          } else {
+            console.error("Error analyzing resume:", data.message);
+          }
+        } catch (error) {
+          console.error("Error making API request:", error);
+        }
+      }
     };
 
     loadData(); // Load initially
 
     // Listen for storage changes and custom majorChanged event
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "uploadedResume" || e.key === "selectedMajor") {
+      if (e.key === "uploadedResume" || e.key === "selectedMajor" || e.key === "uploadedResumeText") {
         loadData();
       }
     };
@@ -64,7 +91,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("majorChanged", handleMajorChange);
-    
+
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("majorChanged", handleMajorChange);
@@ -74,26 +101,17 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback(
-    (connection: Connection) => setEdges((eds) => addEdge({ ...connection, ...defaultEdgeOptions }, eds)),
-    [setEdges]
-  );
+  const onConnect = useCallback((connection: Connection) => setEdges((eds) => addEdge({ ...connection, ...defaultEdgeOptions }, eds)), [setEdges]);
 
   // Add useLayoutEffect to apply initial layout
   useEffect(() => {
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      initialNodes,
-      initialEdges
-    );
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges);
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
   }, []);
 
   const onLayout = useCallback(() => {
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      nodes,
-      edges
-    );
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges);
     setNodes([...layoutedNodes]);
     setEdges([...layoutedEdges]);
   }, [nodes, edges]);
@@ -129,12 +147,12 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
   return (
     <main className={`pt-16 min-h-screen transition-all duration-300 ease-in-out ${isExpanded ? "ml-[20%]" : "ml-16"}`}>
       <div style={{ width: "100%", height: "calc(100vh - 64px)" }}>
-        <ReactFlow 
-          nodes={nodes} 
-          edges={edges} 
-          onNodesChange={onNodesChange} 
-          onEdgesChange={onEdgesChange} 
-          onConnect={onConnect} 
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
           nodeTypes={nodeTypes}
           defaultEdgeOptions={defaultEdgeOptions}
           fitView
@@ -144,8 +162,7 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           elementsSelectable={true}
           selectNodesOnDrag={false}
-          proOptions={{ hideAttribution: true }}
-        >
+          proOptions={{ hideAttribution: true }}>
           <Controls style={{ marginBottom: "10px" }} />
           <Background bgColor="#fafafa" color="#A9A9A9" gap={12} size={1} />
         </ReactFlow>
