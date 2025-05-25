@@ -53,20 +53,119 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
       const storedResumeText = localStorage.getItem("uploadedResumeText");
       if (storedResumeText) {
         try {
-          const response = await fetch("/api/googleGemini", {
+          const response = await fetch("/api/googleGemini/getCareerPaths", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
               resume: `${storedResumeText}`,
+              major: `${majorInfo?.name}`,
             }),
           });
 
           const data = await response.json();
           if (data.status === 200) {
             setResumeAnalysis(data.data.response);
-            // console.log(data.data.response);
+            const careers = data.data.response.map((career: any) => ({
+              id: `career-${career.id}`,
+              type: "careerNode",
+              position: { x: 0, y: 0 }, // Position will be set by the layout algorithm
+              data: {
+                name: career.name,
+                averageSalary: career.averageSalary,
+                demandIn5Years: career.demandIn5Years,
+                percentageMen: career.percentageMenInTheWorkforce,
+                percentageWomen: career.percentageWomenInTheWorkforce,
+              },
+            }));
+
+            const rootNode = {
+              id: "root",
+              type: "rootNode",
+              position: { x: 50, y: 300 },
+              data: {
+                fileInfo: {
+                  name: fileInfo?.name,
+                  url: fileInfo?.url,
+                },
+                majorInfo: {
+                  name: majorInfo?.name,
+                  code: majorInfo?.code,
+                },
+              },
+            };
+
+            // Create skill nodes for each career
+            const skillNodes: any[] = [];
+            const skillNodePromises = careers.map(async (career: any) => {
+              const response = await fetch("/api/googleGemini/getSkillRequirements", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ career: career.data.name }),
+              });
+              const data = await response.json();
+
+              // Create skill nodes for this career
+              const careerSkillNodes = data.data.response.map((skill: any) => ({
+                id: `skill-${skill.id}`,
+                type: "skillNode",
+                position: { x: 0, y: 0 },
+                data: {
+                  name: skill.name,
+                  resources: skill.learningResources,
+                  careerId: career.id,
+                  isCompleted: false,
+                },
+              }));
+
+              // Add these skill nodes to our collection
+              skillNodes.push(...careerSkillNodes);
+            });
+
+            // Wait for all skill node requests to complete
+            await Promise.all(skillNodePromises);
+            // console.log("Skill nodes created:", skillNodes);
+
+            // Combine all nodes
+            const newNodes = [rootNode, ...careers, ...skillNodes];
+            // console.log("All nodes created:", newNodes);
+
+            const newEdges: any[] = [];
+            // Add edges between root node and careers
+            careers.forEach((career: any) => {
+              newEdges.push({
+                id: `root-${career.id}`,
+                source: "root",
+                target: `${career.id}`,
+                type: "smoothstep",
+                animated: true,
+              });
+            });
+
+            // Add edges between careers and skills
+            careers.forEach((career: any) => {
+              skillNodes.forEach((skill: any) => {
+                if (skill.data.careerId === career.id) {
+                  newEdges.push({
+                    id: `${career.id}-${skill.id}`,
+                    source: `${career.id}`,
+                    target: `${skill.id}`,
+                    type: "smoothstep",
+                    animated: true,
+                  });
+                }
+              });
+            });
+
+            // Apply layout to all nodes
+            const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(newNodes, newEdges);
+
+            // Update the nodes and edges
+            setNodes(layoutedNodes);
+            setEdges(layoutedEdges);
           } else {
             console.error("Error analyzing resume:", data.message);
           }
@@ -158,7 +257,6 @@ const MainContent: React.FC<MainContentProps> = ({ isExpanded }) => {
           fitView
           fitViewOptions={{ padding: 0.2 }}
           minZoom={0.2}
-          maxZoom={2}
           defaultViewport={{ x: 0, y: 0, zoom: 1 }}
           elementsSelectable={true}
           selectNodesOnDrag={false}

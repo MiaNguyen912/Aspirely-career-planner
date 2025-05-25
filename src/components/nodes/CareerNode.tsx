@@ -14,7 +14,7 @@ export const CareerNode: React.FC<{ data: CareerNodeData }> = ({ data }) => {
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="bg-white/10 p-2 rounded">
             <p className="text-white/70">Salary</p>
-            <p className="font-medium">${data.averageSalary.toLocaleString()}</p>
+            <p className="font-medium">${data.averageSalary}</p>
           </div>
           <div className="bg-white/10 p-2 rounded">
             <p className="text-white/70">Demand</p>
